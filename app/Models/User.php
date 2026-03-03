@@ -46,4 +46,17 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function reserveFor(Event $event)
+    {
+        // check if use can register
+        if ($event->reservations()->count() >= $event->capacity) {
+            throw new \Exception('Event is full');
+        }
+
+        return Reservation::create([
+            'user_id' => $this->id,
+            'event_id' => $event->id,
+        ]);
+    }
 }
